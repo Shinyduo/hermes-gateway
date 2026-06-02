@@ -22,5 +22,8 @@ for var in API_SERVER_ENABLED API_SERVER_HOST API_SERVER_PORT API_SERVER_KEY API
   printf '%s=%s\n' "$var" "$val" >> "$ENVFILE"
 done
 
+# cont-init.d runs as root; the gateway runs as the unprivileged `hermes`
+# user, so the .env must be owned by and readable to hermes.
+chown hermes:hermes "$ENVFILE" 2>/dev/null || true
 chmod 600 "$ENVFILE" 2>/dev/null || true
-echo "[railway-env] wrote API_SERVER_* config to $ENVFILE"
+echo "[railway-env] wrote API_SERVER_* config to $ENVFILE (owner hermes)"
